@@ -1,0 +1,1 @@
+function s(t){if(t<1024)return`${t} B`;const n=["B","KB","MB","GB","TB","PB"];let e=t;const a=r(e).base;let o=0;for(;e>=a&&o<n.length-1;)e/=a,o++;return e===Math.floor(e)?`${Math.floor(e)} ${n[o]}`:`${e.toFixed(2)} ${n[o]}`}function r(t){return Math.log(t/Math.pow(1024,3))/Math.log(2)%1===0?i.Binary:i.Decimal}const i={Binary:{base:1024},Decimal:{base:1e3}};export{s as t};

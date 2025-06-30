@@ -1,0 +1,134 @@
+[
+    {
+        "versionName": "v33913",
+        "versionCode": 33913,
+        "preRelease": false,
+        "changes": "- Open WXP directly with the selected platform from mmrl"
+    },
+    {
+        "versionName": "v33911",
+        "versionCode": 33911,
+        "preRelease": false,
+        "changes": "- Added support to load WebUI Plugins with installed APKs\r\n- Updated translations\r\n- Improved terminal\r\n- Organized settings"
+    },
+    {
+        "versionName": "v33890",
+        "versionCode": 33890,
+        "preRelease": false,
+        "changes": "- Refactor terminal command handling and state management\r\n- Normalize newlines and apply masks to terminal input\r\n- Add ScriptError parsing and alert title support\r\n- Add dynamic width handling to terminal components\r\n- Enable flexible page sizes in Android build\r\n- Add ReplaceSelf command and improve terminal text handling"
+    },
+    {
+        "versionName": "v33884",
+        "versionCode": 33884,
+        "preRelease": false,
+        "changes": "No message."
+    },
+    {
+        "versionName": "v33858",
+        "versionCode": 33858,
+        "preRelease": false,
+        "changes": "No message."
+    },
+    {
+        "versionName": "v33854",
+        "versionCode": 33854,
+        "preRelease": false,
+        "changes": "No message.\n  \nType: \n[Workflow run](https://github.com/MMRLApp/MMRL/actions/runs/15799632004)"
+    },
+    {
+        "versionName": "v33818",
+        "versionCode": 33818,
+        "preRelease": false,
+        "changes": "No message.\n  \nType: Release\n[Workflow run](https://github.com/MMRLApp/MMRL/actions/runs/15783752173)"
+    },
+    {
+        "versionName": "v33813",
+        "versionCode": 33813,
+        "preRelease": false,
+        "changes": "- Fix Card DSL\n  \nType: Release\n[Workflow run](https://github.com/MMRLApp/MMRL/actions/runs/15688317235)"
+    },
+    {
+        "versionName": "v33812",
+        "versionCode": 33812,
+        "preRelease": false,
+        "changes": "- List Items migrated to a new List DSL.\r\n- Card components migrated to a new Card API, removing nested Modifiers and Box.\r\n- BBCode parser now enforces closing tags like `[color=primary]Text[/color]`.\r\n- Dialog title size fixed when using the new List DSL API.\r\n- Migration to a custom Scaffold that now supports larger screens.\r\n- Added experimental SukiSU Ultra support\r\n\r\n**Future Plans:**\r\n- Migrate AppTopBar to Toolbar for more control over its behavior.\r\n- Continue migrating more UI components.\n  \nType: Release\n[Workflow run](https://github.com/MMRLApp/MMRL/actions/runs/15665710680)"
+    },
+    {
+        "versionName": "v33780",
+        "versionCode": 33780,
+        "preRelease": false,
+        "changes": "- Added line numbers to the installer and action screen\r\n- Added a text for matting api for installer and action\r\n- Removed `Error: ` prefix\r\n\r\nNew API Documentaion can be found at https://mmrl.dev/guide/text-formatting\n  \nType: Release\n[Workflow run](https://github.com/MMRLApp/MMRL/actions/runs/15521734356)"
+    },
+    {
+        "versionName": "v33773",
+        "versionCode": 33773,
+        "preRelease": false,
+        "changes": "- Fixed installer again (it should work now\r\n- Added a proper bottom sheet if a user tries to run WebUI without WXP\n  \nType: Release\n[Workflow run](https://github.com/MMRLApp/MMRL/actions/runs/15489885563)"
+    },
+    {
+        "versionName": "v33751",
+        "versionCode": 33751,
+        "preRelease": false,
+        "changes": "- Improved installer\r\n- Improved action script executer\r\n- Added a option to use the legacy KSU WebUI Engine\n  \nType: Release\n[Workflow run](https://github.com/MMRLApp/MMRL/actions/runs/15377564024)"
+    },
+    {
+        "versionName": "v33653",
+        "versionCode": 33653,
+        "preRelease": false,
+        "changes": "- Added architecture to home screen\r\n- Fixed a issues where repo can't be added when a module description was null\n  \nType: Release\n[Workflow run](https://github.com/MMRLApp/MMRL/actions/runs/15237865164)"
+    },
+    {
+        "versionName": "v33633",
+        "versionCode": 33633,
+        "preRelease": false,
+        "changes": "- Added support for mutiple packages in `config.json` \r\n- Fixed WX wrappers\n  \nType: Release\n[Workflow run](https://github.com/MMRLApp/MMRL/actions/runs/15097209725)"
+    },
+    {
+        "versionName": "v33624",
+        "versionCode": 33624,
+        "preRelease": false,
+        "changes": "Please test the provider setup\n  \nType: Release\n[Workflow run](https://github.com/MMRLApp/MMRL/actions/runs/14947964030)"
+    },
+    {
+        "versionName": "v33613",
+        "versionCode": 33613,
+        "preRelease": false,
+        "changes": "- Fix setup screen\n  \nType: Release\n[Workflow run](https://github.com/MMRLApp/MMRL/actions/runs/14931767953)"
+    },
+    {
+        "versionName": "v33612",
+        "versionCode": 33612,
+        "preRelease": false,
+        "changes": "- Added back the option to load dex files into WebUI X\r\n\r\nHere is an [example:](https://github.com/MMRLApp/webui-dex-template)\n  \nType: Release\n[Workflow run](https://github.com/MMRLApp/MMRL/actions/runs/14930892830)"
+    },
+    {
+        "versionName": "v33599",
+        "versionCode": 33599,
+        "preRelease": false,
+        "changes": "- Use StubModuleManager for Non-Root platforms"
+    },
+    {
+        "versionName": "v33597",
+        "versionCode": 33597,
+        "preRelease": false,
+        "changes": "- Fix wrong signature"
+    },
+    {
+        "versionName": "v33553",
+        "versionCode": 33553,
+        "preRelease": false,
+        "changes": "- Reverted drawer due scroll issues"
+    },
+    {
+        "versionName": "v33424",
+        "versionCode": 33424,
+        "preRelease": false,
+        "changes": "- Added a StyleSheet editor to Eruda \r\n- Added a Script editor to Eruda\r\n- Fixed Eruda was injected even when the developer mode was off\r\n- Added support for `alert(...)`, `confirm(...)` and `prompt(...)` for WebUI's\r\n- Proper handle WebUI WebView history by allowing navigating back. This can be disabled with `backHandler` in the config file\r\n- Added a exit confirmation to WebUI. This can be disabled with `exitConfirm` in the config file\r\n- Fixed WebUI were non-resizeable which fixes keyboard overdraw. This can be disabled with `windowResize` in the config file"
+    },
+    {
+        "versionName": "v33412",
+        "versionCode": 33412,
+        "preRelease": false,
+        "changes": "No Changes found"
+    }
+]

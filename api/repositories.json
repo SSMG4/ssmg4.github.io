@@ -1,0 +1,287 @@
+[
+    {
+        "name": "Googlers Magisk Repo",
+        "maintainers": [],
+        "members": [
+            {
+                "avatar": "https://www.github.com/DerGoogler.png",
+                "name": "Der_Googler",
+                "title": "Owner",
+                "links": [
+                    {
+                        "icon": "github",
+                        "link": "https://github.com/DerGoogler"
+                    }
+                ]
+            }
+        ],
+        "url": "https://gr.dergoogler.com/gmr/",
+        "modules_count": 35,
+        "submission": "https://github.com/Googlers-Repo/gmr/issues/new?assignees=&labels=module&projects=&template=submission.yml&title=%5BModule%5D%3A+",
+        "cover": "https://gr.dergoogler.com/gmr/assets/cover.webp",
+        "timestamp": 1751287877.264351,
+        "description": "A collection of handy tools and tweaks for your Magisk-enabled Android device. If you're into customizing your phone, GMR makes it easy to find, download, and install Magisk modules that can enhance your device's functionality or add cool features.",
+        "donate": "https://github.com/sponsors/DerGoogler"
+    },
+    {
+        "name": "Magisk Modules Alternative Repo",
+        "maintainers": [],
+        "members": [
+            {
+                "avatar": "https://www.github.com/tytydraco.png",
+                "name": "Tyler Nijmeh",
+                "title": "Owner",
+                "links": [
+                    {
+                        "icon": "github",
+                        "link": "https://github.com/tytydraco"
+                    }
+                ]
+            },
+            {
+                "avatar": "https://www.github.com/Atrate.png",
+                "name": "Atrate",
+                "title": "Owner",
+                "links": [
+                    {
+                        "icon": "github",
+                        "link": "https://github.com/Atrate"
+                    }
+                ]
+            },
+            {
+                "avatar": "https://www.github.com/DerGoogler.png",
+                "name": "Der_Googler",
+                "title": "Moderator",
+                "links": [
+                    {
+                        "icon": "github",
+                        "link": "https://github.com/DerGoogler"
+                    }
+                ]
+            },
+            {
+                "avatar": "https://www.github.com/Fox2Code.png",
+                "name": "Fox2Code",
+                "title": "Moderator",
+                "links": [
+                    {
+                        "icon": "github",
+                        "link": "https://github.com/Fox2Code"
+                    }
+                ]
+            },
+            {
+                "avatar": "https://www.github.com/HuskyDG.png",
+                "name": "HuskyDG",
+                "title": "Moderator",
+                "links": [
+                    {
+                        "icon": "github",
+                        "link": "https://github.com/HuskyDG"
+                    }
+                ]
+            }
+        ],
+        "url": "https://magisk-modules-alt-repo.github.io/json-v2/",
+        "modules_count": 119,
+        "submission": "https://github.com/Magisk-Modules-Alt-Repo/submission/issues/new?assignees=&labels=module&projects=&template=module-submission.yml&title=%5BModule%5D+",
+        "cover": "https://magisk-modules-alt-repo.github.io/json-v2/assets/cover.webp",
+        "timestamp": 1751287122.766167,
+        "description": "An alternative to Magisk-Modules-Repo with fewer restrictions. Now larger than the original!",
+        "donate": null
+    },
+    {
+        "name": "IzzyOnDroid Magisk Repository",
+        "maintainers": [],
+        "members": [
+            {
+                "avatar": "https://www.github.com/IzzySoft.png",
+                "name": "IzzySoft",
+                "title": "Owner",
+                "links": [
+                    {
+                        "icon": "github",
+                        "link": "https://github.com/IzzySoft"
+                    },
+                    {
+                        "icon": "gitlab",
+                        "link": "https://gitlab.com/IzzySoft"
+                    }
+                ]
+            }
+        ],
+        "url": "https://apt.izzysoft.de/magisk/",
+        "modules_count": 136,
+        "submission": "https://gitlab.com/IzzyOnDroid/repo/-/issues",
+        "timestamp": 1750864069.337608,
+        "donate": "https://android.izzysoft.de/help?topic=support_us"
+    },
+    {
+        "name": "Magisk Modules Rikj000 Repo",
+        "members": [
+            {
+                "avatar": "https://www.github.com/Rikj000.png",
+                "name": "Rikj000",
+                "title": "Owner",
+                "links": [
+                    {
+                        "icon": "github",
+                        "link": "https://github.com/Rikj000"
+                    }
+                ]
+            }
+        ],
+        "maintainers": [],
+        "url": "https://rikj000.github.io/Magisk-Modules-Rikj000-Repo/",
+        "modules_count": 2,
+        "timestamp": 1751230911.951589
+    },
+    {
+        "name": "Celica Magisk Modules Repo",
+        "members": [
+            {
+                "avatar": "https://www.github.com/natsumerinchan.png",
+                "name": "natsumerinchan",
+                "title": "Owner",
+                "links": [
+                    {
+                        "icon": "github",
+                        "link": "https://github.com/natsumerinchan"
+                    }
+                ]
+            }
+        ],
+        "maintainers": [],
+        "url": "https://natsumerinchan.github.io/celica-magisk-modules-repo/",
+        "modules_count": 4,
+        "timestamp": 1692507250.347891
+    },
+    {
+        "name": "Magisk Font Collection Repository",
+        "maintainers": [],
+        "url": "https://codeberg.org/fruitsnack/magisk-font-repo/raw/branch/main/",
+        "modules_count": 38,
+        "timestamp": 1708292867
+    },
+    {
+        "name": "LelouBil Magisk Repo",
+        "maintainers": [],
+        "members": [
+            {
+                "avatar": "https://www.github.com/leloubil.png",
+                "name": "leloubil",
+                "title": "Owner",
+                "links": [
+                    {
+                        "icon": "github",
+                        "link": "https://github.com/leloubil"
+                    }
+                ]
+            }
+        ],
+        "url": "https://leloubil.github.io/magisk-repo/",
+        "modules_count": 1,
+        "submission": "https://github.com/LelouBil/magisk-repo/issues/new?assignees=&labels=module&projects=&template=submission.yml&title=%5BModule%5D%3A+",
+        "cover": null,
+        "timestamp": 1735993240.099473,
+        "description": null,
+        "donate": ""
+    },
+    {
+        "name": "Misaki-Modules Repo",
+        "maintainers": [],
+        "members": [
+            {
+                "avatar": "https://www.github.com/misak10.png",
+                "name": "misak10",
+                "title": "Owner",
+                "links": [
+                    {
+                        "icon": "github",
+                        "link": "https://github.com/misak10"
+                    }
+                ]
+            }
+        ],
+        "url": "https://misak10.github.io/mmrl-repo/",
+        "modules_count": 40,
+        "submission": "https://github.com/misak10/mmrl-repo/issues/new",
+        "cover": "https://misak10.github.io/mmrl-repo/assets/cover.webp",
+        "timestamp": 1751286899.267652,
+        "description": "✨ Misaki - Repo ✨",
+        "donate": "https://afdian.com/a/misak10"
+    },
+    {
+        "name": "ZG089’s modules repo",
+        "maintainers": [],
+        "members": [
+            {
+                "avatar": "https://www.github.com/ZG089.png",
+                "name": "ZG089",
+                "title": "Owner",
+                "links": [
+                    {
+                        "icon": "github",
+                        "link": "https://github.com/ZG089"
+                    }
+                ]
+            }
+        ],
+        "url": "https://zguation-projects.github.io/ZG-R/",
+        "modules_count": 32,
+        "submission": "https://github.com/ZGUATION-PROJECTS/ZG-R/issues",
+        "cover": "https://zguation-projects.github.io/ZG-R/assets/cover.webp",
+        "timestamp": 1751300597.865488,
+        "description": "A wonderful collection of useful modules that are known or considered as hidden gems, all in one repo, It also contains ZG089's projects (modules) as well.",
+        "donate": "https://www.buymeacoffee.com/ZG089"
+    },
+    {
+        "name": "Rem01 Projects",
+        "maintainers": [],
+        "members": [
+            {
+                "avatar": "https://www.github.com/Rem01Gaming.png",
+                "name": "Rem01Gaming",
+                "title": "Owner",
+                "links": [
+                    {
+                        "icon": "github",
+                        "link": "https://github.com/Rem01Gaming"
+                    }
+                ]
+            }
+        ],
+        "url": "https://mrepo.rem01gaming.dev/",
+        "modules_count": 2,
+        "submission": null,
+        "cover": "https://mrepo.rem01gaming.dev/assets/cover.webp",
+        "timestamp": 1751285747.473705,
+        "description": "A collection of handy tools and tweaks for your Magisk-enabled Android device by Rem01Gaming ✨",
+        "donate": "https://t.me/rem01schannel/712"
+    },
+    {
+        "name": "SSMG4’s Magisk Modules Repository",
+        "maintainers": [],
+        "members": [
+            {
+                "avatar": "https://www.github.com/SSMG4.png",
+                "name": "SSMG4",
+                "title": "Owner",
+                "links": [
+                    {
+                        "icon": "github",
+                        "link": "https://github.com/SSMG4"
+                    }
+                ]
+            }
+        ],
+        "url": "https://ssmg4.github.io/SSR/",
+        "modules_count": 139,
+        "submission": "https://github.com/SSMG4/SSR/issues",
+        "cover": "https://ssmg4.github.io/SSR/assets/cover.webp",
+        "timestamp": 1751286310.88675,
+        "description": "An amazing Magisk Modules Repository that aims to bring you any Magisk Modules in a single Repo! How cool is that uh? :P Any Submissions are greatly appreciated!",
+        "donate": "https://ssmg4.github.io/donations.html"
+    }
+]
