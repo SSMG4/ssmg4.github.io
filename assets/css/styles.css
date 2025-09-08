@@ -100,7 +100,7 @@ h1 {
     transition: color 0.25s;
     z-index: 10;
 }
-#theme-toggle:focus { outline: 2px solid #ffd200; }
+#theme-toggle:focus { outline: none; }
 
 .heart {
     color: #ff4d6d;
