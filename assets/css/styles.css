@@ -194,29 +194,6 @@ h1 {
     margin-bottom: 0.6rem;
 }
 
-/* Site form */
-.add-site-form {
-    display: flex;
-    gap: 0.6rem;
-    flex-wrap: wrap;
-    align-items: center;
-    margin-top: 0.8rem;
-}
-.add-site-form input[type="text"],
-.add-site-form input[type="url"] {
-    padding: 0.55rem 0.8rem;
-    border-radius: 8px;
-    border: 1px solid var(--card-border);
-    background: var(--card-bg);
-    color: var(--fg);
-    min-width: 160px;
-    flex: 1 1 auto;
-}
-.add-site-form .repo-link {
-    padding: 0.55rem 0.9rem;
-    border-radius: 9px;
-}
-
 /* === Donate Button === */
 .donate-link {
     text-align: center;
@@ -260,6 +237,5 @@ footer {
 }
 
 @media (max-width: 600px) {
-    .add-site-form { flex-direction: column; align-items: stretch; }
-    .add-site-form .repo-link { width: 100%; text-align: center; }
+    .header-title h1 { font-size: 2.0rem; }
 }
