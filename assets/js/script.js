@@ -45,25 +45,29 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-/* === Utilities for manual sites in localStorage === */
-const MANUAL_SITES_KEY = 'ssmg4_manual_sites';
+/* -----------------------------------------------------------------------
+   MANUAL SITES PLACEHOLDER
+   -----------------------------------------------------------------------
+   Add manual/non-GitHub websites here by editing this array in the repo.
+   Example:
+   { name: 'My Site', url: 'https://example.com', description: 'Short description' }
 
+   IMPORTANT: Edit this file in your Github repository (not via the website).
+   ----------------------------------------------------------------------- */
+const MANUAL_SITES = [
+    // <-- Insert Manual Website Here -->
+    // Example commented entry:
+    // { name: 'My Project', url: 'https://myproject.example.com', description: 'Hosted outside GitHub' }
+];
+
+/* === Utilities (manual sites are read from MANUAL_SITES constant) */
 function loadManualSites() {
+    // Return a (clone) array to avoid mutation of the constant by mistake
     try {
-        const raw = localStorage.getItem(MANUAL_SITES_KEY);
-        if (!raw) return [];
-        return JSON.parse(raw);
+        return Array.isArray(MANUAL_SITES) ? MANUAL_SITES.slice() : [];
     } catch (e) {
-        console.error('Failed to parse manual sites', e);
+        console.error('Failed to load manual sites', e);
         return [];
-    }
-}
-
-function saveManualSites(sites) {
-    try {
-        localStorage.setItem(MANUAL_SITES_KEY, JSON.stringify(sites));
-    } catch (e) {
-        console.error('Failed to save manual sites', e);
     }
 }
 
@@ -71,23 +75,25 @@ function saveManualSites(sites) {
 function makeCard(kind, title, descText, metaHtml, actions = []) {
     const card = document.createElement('div');
     card.className = 'repo-card';
-    const titleEl = document.createElement('div');
-    titleEl.className = 'repo-title';
-    titleEl.textContent = title;
-    card.appendChild(titleEl);
 
-    if (kind === 'org' && metaHtml && metaHtml.avatar) {
+    if (kind === 'org') {
         const header = document.createElement('div');
         header.className = 'org-header';
         const avatar = document.createElement('img');
         avatar.className = 'org-avatar';
-        avatar.src = metaHtml.avatar;
+        avatar.src = (metaHtml && metaHtml.avatar) ? metaHtml.avatar : '';
         avatar.alt = title + ' avatar';
+        const titleEl = document.createElement('div');
+        titleEl.className = 'repo-title';
+        titleEl.textContent = title;
         header.appendChild(avatar);
-        const titleBlock = document.createElement('div');
-        titleBlock.appendChild(titleEl);
-        header.appendChild(titleBlock);
+        header.appendChild(titleEl);
         card.appendChild(header);
+    } else {
+        const titleEl = document.createElement('div');
+        titleEl.className = 'repo-title';
+        titleEl.textContent = title;
+        card.appendChild(titleEl);
     }
 
     const desc = document.createElement('div');
@@ -188,7 +194,6 @@ async function fetchOrgsAndRender() {
     }
 }
 
-/* === Websites: combine GitHub Pages sites and manual entries, allow adding/removing manual entries === */
 async function fetchWebsitesAndRender() {
     const container = document.getElementById('websites-list');
     if (!container) return;
@@ -211,7 +216,7 @@ async function fetchWebsitesAndRender() {
                 };
             });
 
-        // Manual sites from localStorage
+        // Manual sites from the MANUAL_SITES constant
         const manual = loadManualSites().map(s => ({ ...s, source: 'manual' }));
 
         // Combine and sort alphabetically by name (case-insensitive)
@@ -234,19 +239,7 @@ async function fetchWebsitesAndRender() {
                 a.textContent = 'Visit';
                 actions.push({ element: a });
             }
-            if (item.source === 'manual') {
-                // remove button for manual entries
-                const rmBtn = document.createElement('button');
-                rmBtn.className = 'repo-link';
-                rmBtn.style.background = '#ff6b6b';
-                rmBtn.style.color = '#fff';
-                rmBtn.type = 'button';
-                rmBtn.textContent = 'Remove';
-                rmBtn.addEventListener('click', () => {
-                    removeManualSite(item.url);
-                });
-                actions.push({ element: rmBtn });
-            }
+            // no on-site remove/edit controls for manual items (you edit MANUAL_SITES in code)
             const desc = item.description || (item.source === 'github' ? 'GitHub Pages site' : '');
             const card = makeCard('site', item.name, desc, null, actions);
             container.appendChild(card);
@@ -257,63 +250,13 @@ async function fetchWebsitesAndRender() {
     }
 }
 
-function addManualSite(site) {
-    const current = loadManualSites();
-    // basic dedupe: by URL
-    if (current.some(s => s.url === site.url)) return false;
-    current.push(site);
-    saveManualSites(current);
-    return true;
-}
-
-function removeManualSite(url) {
-    let current = loadManualSites();
-    current = current.filter(s => s.url !== url);
-    saveManualSites(current);
-    // rerender websites
-    fetchWebsitesAndRender();
-}
-
-/* === Form handling for adding manual sites === */
+/* === Initial fetches in requested order ===
+   1) My GitHub Projects
+   2) My Websites
+   3) My Organizations
+*/
 document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('add-site-form');
-    if (form) {
-        form.addEventListener('submit', (ev) => {
-            ev.preventDefault();
-            const nameInput = document.getElementById('site-name');
-            const urlInput = document.getElementById('site-url');
-            const descInput = document.getElementById('site-desc');
-            if (!nameInput || !urlInput) return;
-
-            const name = nameInput.value.trim();
-            const url = urlInput.value.trim();
-            const desc = descInput ? descInput.value.trim() : '';
-
-            if (!name || !url) return;
-
-            // Ensure URL is absolute
-            let normalizedUrl = url;
-            if (!/^https?:\/\//i.test(normalizedUrl)) {
-                normalizedUrl = 'https://' + normalizedUrl;
-            }
-
-            const siteObj = { name, url: normalizedUrl, description: desc };
-            const added = addManualSite(siteObj);
-            if (!added) {
-                // optionally show feedback; for now console
-                console.info('Site already exists in manual list.');
-            } else {
-                // clear form
-                nameInput.value = '';
-                urlInput.value = '';
-                if (descInput) descInput.value = '';
-                fetchWebsitesAndRender();
-            }
-        });
-    }
-
-    // Initial fetches
+    fetchReposAndRender();
     fetchWebsitesAndRender();
     fetchOrgsAndRender();
-    fetchReposAndRender();
 });
