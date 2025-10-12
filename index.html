@@ -9,6 +9,10 @@
     <link rel="preload" as="font" href="assets/fonts/mojangles.ttf" type="font/ttf" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
+    <audio controls autoplay loop>
+    <source src="music.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
 <body>
     <div class="main-container">
         <header>
@@ -29,35 +33,32 @@
             </div>
         </header>
         <main>
-            <!-- Websites Section -->
+            <!-- Reordered: Projects first -->
+            <section class="repo-section">
+                <h2>My GitHub Projects</h2>
+                <div id="repo-list" class="repo-list">
+                    <!-- Repo cards injected here by script.js -->
+                </div>
+            </section>
+
+            <!-- Websites Section (no on-site manual form anymore) -->
             <section class="repo-section">
                 <h2>My Websites</h2>
-                <div class="site-controls">
-                    <form id="add-site-form" class="add-site-form" aria-label="Add website">
-                        <input id="site-name" type="text" placeholder="Site name (e.g. My Project)" required>
-                        <input id="site-url" type="url" placeholder="https://example.com" required>
-                        <input id="site-desc" type="text" placeholder="Short description (optional)">
-                        <button type="submit" class="repo-link">Add site</button>
-                    </form>
-                </div>
+                <!-- Note: Manual website entries are now added directly in the JavaScript (assets/js/script.js)
+                     Edit the MANUAL_SITES array in that file to add / change manual entries.
+                     Example entry format:
+                     { name: 'My Site', url: 'https://example.com', description: 'Short description' }
+                -->
                 <div id="websites-list" class="repo-list">
                     <!-- Site cards injected here -->
                 </div>
             </section>
 
-            <!-- Orgs Section -->
+            <!-- Orgs last -->
             <section class="repo-section">
                 <h2>Organizations</h2>
                 <div id="orgs-list" class="repo-list">
                     <!-- Org cards injected here -->
-                </div>
-            </section>
-
-            <!-- Repos Section -->
-            <section class="repo-section">
-                <h2>My GitHub Projects</h2>
-                <div id="repo-list" class="repo-list">
-                    <!-- Repo cards injected here by script.js -->
                 </div>
             </section>
 
