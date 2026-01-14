@@ -31,7 +31,6 @@ function toggleTheme() {
 
 if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
 
-// On load, apply preferred theme
 (function() {
     const pref = localStorage.getItem('theme') ||
         (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
@@ -45,24 +44,13 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-/* -----------------------------------------------------------------------
-   MANUAL SITES PLACEHOLDER
-   -----------------------------------------------------------------------
-   Add manual/non-GitHub websites here by editing this array in the repo.
-   Example:
-   { name: 'My Site', url: 'https://example.com', description: 'Short description' }
-
-   IMPORTANT: Edit this file in your Github repository (not via the website).
-   ----------------------------------------------------------------------- */
+/* --- MANUAL SITES --- */
 const MANUAL_SITES = [
-    // <-- Insert Manual Website Here -->
-    // Example commented entry:
-    // { name: 'My Project', url: 'https://myproject.example.com', description: 'Hosted outside GitHub' }
+    // Add external websites here. Example:
+    // { name: 'My Portfolio', url: 'https://example.com', description: 'My personal portfolio' }
 ];
 
-/* === Utilities (manual sites are read from MANUAL_SITES constant) */
 function loadManualSites() {
-    // Return a (clone) array to avoid mutation of the constant by mistake
     try {
         return Array.isArray(MANUAL_SITES) ? MANUAL_SITES.slice() : [];
     } catch (e) {
@@ -113,17 +101,13 @@ function makeCard(kind, title, descText, metaHtml, actions = []) {
         actionWrap.style.display = 'flex';
         actionWrap.style.gap = '0.6rem';
         actions.forEach(a => {
-            if (a.element) {
-                actionWrap.appendChild(a.element);
-            } else if (a.href) {
-                const btn = document.createElement('a');
-                btn.className = 'repo-link';
-                btn.href = a.href;
-                btn.target = '_blank';
-                btn.rel = 'noopener noreferrer';
-                btn.textContent = a.label || 'Visit';
-                actionWrap.appendChild(btn);
-            }
+            const btn = document.createElement('a');
+            btn.className = 'repo-link';
+            btn.href = a.href;
+            btn.target = '_blank';
+            btn.rel = 'noopener noreferrer';
+            btn.textContent = a.label || 'Visit Website';
+            actionWrap.appendChild(btn);
         });
         card.appendChild(actionWrap);
     }
@@ -131,9 +115,9 @@ function makeCard(kind, title, descText, metaHtml, actions = []) {
     return card;
 }
 
-/* === Fetch and display GitHub repos, websites, and orgs === */
-const GITHUB_USER = 'SSMG4'; // change here if needed
+const GITHUB_USER = 'SSMG4';
 
+/* === 1. GitHub Projects (Now includes "Visit Website" if available) === */
 async function fetchReposAndRender() {
     const container = document.getElementById('repo-list');
     if (!container) return;
@@ -145,130 +129,63 @@ async function fetchReposAndRender() {
         const repos = Array.isArray(data) ? data.filter(r => !r.fork) : [];
         repos.sort((a, b) => b.stargazers_count - a.stargazers_count);
 
-        if (repos.length === 0) {
-            container.innerHTML = '<div class="repo-card">No repositories found.</div>';
-            return;
-        }
         container.innerHTML = '';
         repos.forEach(repo => {
-            const title = repo.name;
-            const desc = repo.description || 'No description';
             const metaLine = `<span title="Stars"><i class="fa-solid fa-star"></i> ${repo.stargazers_count}</span>
                               <span title="Language">${repo.language || 'N/A'}</span>`;
             
-            // Primary action: View code
             const actions = [{ href: repo.html_url, label: 'View on GitHub' }];
 
-            // NEW: Detects GitHub Pages or a custom homepage URL
+            // Auto-check for website
             if (repo.has_pages || repo.homepage) {
-                // Use the homepage URL if set, otherwise default to the GitHub Pages structure
                 const siteUrl = repo.homepage || `https://${GITHUB_USER}.github.io/${repo.name}/`;
                 actions.push({ href: siteUrl, label: 'Visit Website' });
             }
 
-            const card = makeCard('repo', title, desc, { line: metaLine }, actions);
-            container.appendChild(card);
+            container.appendChild(makeCard('repo', repo.name, repo.description, { line: metaLine }, actions));
         });
     } catch (e) {
-        console.error(e);
         container.innerHTML = '<div class="repo-card">Could not load repositories.</div>';
     }
 }
 
-async function fetchOrgsAndRender() {
-    const container = document.getElementById('orgs-list');
-    if (!container) return;
-    container.innerHTML = '<div class="repo-card">Loading organizations...</div>';
-    try {
-        const res = await fetch(`https://api.github.com/users/${GITHUB_USER}/orgs`);
-        if (!res.ok) throw new Error('GitHub API error (orgs)');
-        const data = await res.json();
-        if (!Array.isArray(data) || data.length === 0) {
-            container.innerHTML = '<div class="repo-card">No organizations found.</div>';
-            return;
-        }
-        // Sort alphabetically by login (case-insensitive)
-        data.sort((a, b) => (a.login || '').toLowerCase().localeCompare((b.login || '').toLowerCase()));
-        container.innerHTML = '';
-        data.forEach(org => {
-            const title = org.login || org.name || 'Organization';
-            const desc = org.description || '';
-            const meta = { avatar: org.avatar_url, line: '' };
-            const visit = { href: `https://github.com/${org.login}`, label: 'View on GitHub' };
-            const card = makeCard('org', title, desc, meta, [visit]);
-            container.appendChild(card);
-        });
-    } catch (e) {
-        console.error(e);
-        container.innerHTML = '<div class="repo-card">Could not load organizations.</div>';
-    }
-}
-
-/* === Render only Manual Websites === */
+/* === 2. Manual Websites Section === */
 async function fetchWebsitesAndRender() {
     const container = document.getElementById('websites-list');
     if (!container) return;
     
-    // This now strictly pulls from your MANUAL_SITES array above
     const manual = loadManualSites();
-
     if (manual.length === 0) {
-        container.innerHTML = '<div class="repo-card">No external websites listed. Check back later.</div>';
+        container.innerHTML = '<div class="repo-card">No external websites listed.</div>';
         return;
     }
 
     container.innerHTML = '';
     manual.forEach(item => {
-        const actions = [];
-        if (item.url) {
-            actions.push({ href: item.url, label: 'Visit Website' });
-        }
-        const desc = item.description || 'External Website';
-        const card = makeCard('site', item.name, desc, null, actions);
-        container.appendChild(card);
+        const actions = item.url ? [{ href: item.url, label: 'Visit Website' }] : [];
+        container.appendChild(makeCard('site', item.name, item.description, null, actions));
     });
 }
 
-        // Manual sites from the MANUAL_SITES constant
-        const manual = loadManualSites().map(s => ({ ...s, source: 'manual' }));
-
-        // Combine and sort alphabetically by name (case-insensitive)
-        const combined = ghSites.concat(manual).sort((a, b) => (a.name || '').toLowerCase().localeCompare((b.name || '').toLowerCase()));
-
-        // Render
-        if (combined.length === 0) {
-            container.innerHTML = '<div class="repo-card">No websites found.</div>';
-            return;
-        }
+/* === 3. Organizations === */
+async function fetchOrgsAndRender() {
+    const container = document.getElementById('orgs-list');
+    if (!container) return;
+    try {
+        const res = await fetch(`https://api.github.com/users/${GITHUB_USER}/orgs`);
+        const data = await res.json();
         container.innerHTML = '';
-        combined.forEach(item => {
-            const actions = [];
-            if (item.url) {
-                const a = document.createElement('a');
-                a.className = 'repo-link';
-                a.href = item.url;
-                a.target = '_blank';
-                a.rel = 'noopener noreferrer';
-                a.textContent = 'Visit';
-                actions.push({ element: a });
-            }
-            // no on-site remove/edit controls for manual items (you edit MANUAL_SITES in code)
-            const desc = item.description || (item.source === 'github' ? 'GitHub Pages site' : '');
-            const card = makeCard('site', item.name, desc, null, actions);
-            container.appendChild(card);
+        data.forEach(org => {
+            const meta = { avatar: org.avatar_url, line: '' };
+            const actions = [{ href: `https://github.com/${org.login}`, label: 'View on GitHub' }];
+            container.appendChild(makeCard('org', org.login, org.description, meta, actions));
         });
     } catch (e) {
-        console.error(e);
-        container.innerHTML = '<div class="repo-card">Could not load websites.<br/>Try again later.</div>';
+        container.innerHTML = '<div class="repo-card">No organizations found.</div>';
     }
 }
 
-/* === Initial fetches in requested order ===
-   1) My GitHub Projects
-   2) My Websites
-   3) My Organizations
-*/
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
     fetchReposAndRender();
     fetchWebsitesAndRender();
     fetchOrgsAndRender();
