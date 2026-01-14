@@ -155,13 +155,23 @@ async function fetchReposAndRender() {
             const desc = repo.description || 'No description';
             const metaLine = `<span title="Stars"><i class="fa-solid fa-star"></i> ${repo.stargazers_count}</span>
                               <span title="Language">${repo.language || 'N/A'}</span>`;
-            const visit = { href: repo.html_url, label: 'View on GitHub' };
-            const card = makeCard('repo', title, desc, { line: metaLine }, [visit]);
+            
+            // Primary action: View code
+            const actions = [{ href: repo.html_url, label: 'View on GitHub' }];
+
+            // NEW: Detects GitHub Pages or a custom homepage URL
+            if (repo.has_pages || repo.homepage) {
+                // Use the homepage URL if set, otherwise default to the GitHub Pages structure
+                const siteUrl = repo.homepage || `https://${GITHUB_USER}.github.io/${repo.name}/`;
+                actions.push({ href: siteUrl, label: 'Visit Website' });
+            }
+
+            const card = makeCard('repo', title, desc, { line: metaLine }, actions);
             container.appendChild(card);
         });
     } catch (e) {
         console.error(e);
-        container.innerHTML = '<div class="repo-card">Could not load repositories.<br/>Try again later.</div>';
+        container.innerHTML = '<div class="repo-card">Could not load repositories.</div>';
     }
 }
 
@@ -194,27 +204,30 @@ async function fetchOrgsAndRender() {
     }
 }
 
+/* === Render only Manual Websites === */
 async function fetchWebsitesAndRender() {
     const container = document.getElementById('websites-list');
     if (!container) return;
-    container.innerHTML = '<div class="repo-card">Loading websites...</div>';
-    try {
-        const res = await fetch(`https://api.github.com/users/${GITHUB_USER}/repos?per_page=200&sort=updated`);
-        if (!res.ok) throw new Error('GitHub API error');
-        const data = await res.json();
-        const repos = Array.isArray(data) ? data : [];
+    
+    // This now strictly pulls from your MANUAL_SITES array above
+    const manual = loadManualSites();
 
-        // Discover GitHub Pages: has_pages true and exclude repo named exactly `${GITHUB_USER}.github.io`
-        const ghSites = repos
-            .filter(r => r.has_pages && r.name.toLowerCase() !== `${GITHUB_USER.toLowerCase()}.github.io`)
-            .map(r => {
-                return {
-                    name: r.name,
-                    url: `https://${GITHUB_USER}.github.io/${r.name}/`,
-                    description: r.description || '',
-                    source: 'github'
-                };
-            });
+    if (manual.length === 0) {
+        container.innerHTML = '<div class="repo-card">No external websites listed. Check back later.</div>';
+        return;
+    }
+
+    container.innerHTML = '';
+    manual.forEach(item => {
+        const actions = [];
+        if (item.url) {
+            actions.push({ href: item.url, label: 'Visit Website' });
+        }
+        const desc = item.description || 'External Website';
+        const card = makeCard('site', item.name, desc, null, actions);
+        container.appendChild(card);
+    });
+}
 
         // Manual sites from the MANUAL_SITES constant
         const manual = loadManualSites().map(s => ({ ...s, source: 'manual' }));
