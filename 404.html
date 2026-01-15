@@ -7,88 +7,129 @@
   <link rel="icon" href="https://ssmg4.github.io/assets/favicon.ico">
   <link rel="stylesheet" href="https://ssmg4.github.io/assets/css/styles.css">
   <link rel="preload" as="font" href="https://ssmg4.github.io/assets/fonts/mojangles.ttf" type="font/ttf" crossorigin>
+  <style>
+    /* Fix for Bug #1: Hide controls on PC, show on Mobile */
+    .mobile-controls {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 1.5rem;
+      gap: 10px;
+    }
+
+    /* Only show if the device supports touch */
+    @media (pointer: coarse) {
+      .mobile-controls {
+        display: flex;
+      }
+    }
+
+    /* Fix for Bug #2: Proper Centering */
+    .control-row {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      width: 100%;
+    }
+
+    #snake {
+      image-rendering: pixelated; /* Keeps it sharp */
+      max-width: 90vw; /* Responsive for small screens */
+    }
+  </style>
 </head>
 <body>
   <div class="main-container" style="text-align:center;">
     <h1 style="font-family:'Mojangles',sans-serif;font-size:2.2rem;margin-top:3rem;">404: Page Not Found</h1>
     <p style="font-size:1.15rem;margin:1.2rem auto 1.7rem;max-width:400px;">
-      Oops! This page doesn't exist, or something went wrong.<br>
-      But hey, want to play a quick game of snake while you're here?
+      Oops! This page doesn't exist.<br>
+      Want to play a quick game of snake while you're here?
     </p>
     <button class="colorful-btn" onclick="startSnake()">🐍 Play Snake</button>
+
     <div id="game-container" style="display:none;margin-top:2rem;">
-      <h2 style="font-family:'Mojangles',sans-serif;">Snake Game</h2>
+      <h2 style="font-family:'Mojangles',sans-serif;">Score: <span id="current-score">0</span></h2>
       <canvas id="snake" width="300" height="300" style="background:#222;border:3px solid #fff;border-radius:12px;"></canvas>
-      <div class="controls" style="margin-top:1.2em;">
-        <div class="row">
-          <button class="repo-link" onclick="setDirection('UP')">⬆️</button>
+      
+      <div class="mobile-controls">
+        <div class="control-row">
+          <button class="repo-link" style="padding: 15px 25px;" onclick="setDirection('UP')">⬆️</button>
         </div>
-        <div class="row" style="display:flex;gap:0.6em;">
-          <button class="repo-link" onclick="setDirection('LEFT')">⬅️</button>
-          <button class="repo-link" onclick="setDirection('DOWN')">⬇️</button>
-          <button class="repo-link" onclick="setDirection('RIGHT')">➡️</button>
+        <div class="control-row">
+          <button class="repo-link" style="padding: 15px 25px;" onclick="setDirection('LEFT')">⬅️</button>
+          <button class="repo-link" style="padding: 15px 25px;" onclick="setDirection('DOWN')">⬇️</button>
+          <button class="repo-link" style="padding: 15px 25px;" onclick="setDirection('RIGHT')">➡️</button>
         </div>
       </div>
     </div>
+
     <p style="margin-top:2.5rem;"><a href="/" class="repo-link">Back to Home</a></p>
   </div>
+
   <script>
-    // --- Snake game logic (as-is, with style tweaks) ---
     let canvas = document.getElementById("snake");
-    let ctx = canvas ? canvas.getContext("2d") : null;
-    const box = 15;
-    let snake = [{ x: 9 * box, y: 9 * box }];
-    let food = {
-      x: Math.floor(Math.random() * 19) * box,
-      y: Math.floor(Math.random() * 19) * box
-    };
-    let direction = "";
-    let score = 0;
-    let game;
+    let ctx = canvas.getContext("2d");
+    const box = 15; // 300 / 15 = 20 tiles
+    let snake, food, direction, nextDirection, game, score;
 
     function startSnake() {
       document.getElementById("game-container").style.display = "block";
-      direction = "";
-      snake = [{ x: 9 * box, y: 9 * box }];
+      // Reset variables
       score = 0;
-      food = {
-        x: Math.floor(Math.random() * 19) * box,
-        y: Math.floor(Math.random() * 19) * box
-      };
+      document.getElementById("current-score").innerText = score;
+      direction = "RIGHT";
+      nextDirection = "RIGHT"; // Buffer to prevent self-collision
+      snake = [{ x: 5 * box, y: 10 * box }];
+      spawnFood();
+      
       document.addEventListener("keydown", dirControl);
-      clearInterval(game); // prevent multiple intervals
-      game = setInterval(drawGame, 190);
+      clearInterval(game);
+      // Fix for Bug #4: Reduced interval from 190ms to 130ms for snappier response
+      game = setInterval(drawGame, 130); 
+    }
+
+    function spawnFood() {
+      food = {
+        x: Math.floor(Math.random() * 20) * box,
+        y: Math.floor(Math.random() * 20) * box
+      };
+      // Prevent food from spawning on snake body
+      if (snake.some(s => s.x === food.x && s.y === food.y)) spawnFood();
     }
 
     function dirControl(e) {
-      if (e.key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
-      else if (e.key === "ArrowUp" && direction !== "DOWN") direction = "UP";
-      else if (e.key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
-      else if (e.key === "ArrowDown" && direction !== "UP") direction = "DOWN";
+      if (e.key === "ArrowLeft") setDirection('LEFT');
+      if (e.key === "ArrowUp") setDirection('UP');
+      if (e.key === "ArrowRight") setDirection('RIGHT');
+      if (e.key === "ArrowDown") setDirection('DOWN');
     }
 
     function setDirection(dir) {
-      if (dir === "LEFT" && direction !== "RIGHT") direction = "LEFT";
-      else if (dir === "UP" && direction !== "DOWN") direction = "UP";
-      else if (dir === "RIGHT" && direction !== "LEFT") direction = "RIGHT";
-      else if (dir === "DOWN" && direction !== "UP") direction = "DOWN";
+      // Logic to prevent 180-degree turns
+      if (dir === "LEFT" && direction !== "RIGHT") nextDirection = "LEFT";
+      else if (dir === "UP" && direction !== "DOWN") nextDirection = "UP";
+      else if (dir === "RIGHT" && direction !== "LEFT") nextDirection = "RIGHT";
+      else if (dir === "DOWN" && direction !== "UP") nextDirection = "DOWN";
     }
 
     function drawGame() {
-      if (!ctx) {
-        canvas = document.getElementById("snake");
-        ctx = canvas.getContext("2d");
-      }
-      ctx.fillStyle = "#333";
+      direction = nextDirection; // Apply direction change at the start of the frame
+      
+      ctx.fillStyle = "#222";
       ctx.fillRect(0, 0, 300, 300);
 
-      for (let i = 0; i < snake.length; i++) {
-        ctx.fillStyle = i === 0 ? "#ffd200" : "#8f6ae7";
-        ctx.fillRect(snake[i].x, snake[i].y, box, box);
-      }
-
+      // Draw Food
       ctx.fillStyle = "#ff4d6d";
       ctx.fillRect(food.x, food.y, box, box);
+
+      // Draw Snake
+      for (let i = 0; i < snake.length; i++) {
+        ctx.fillStyle = (i === 0) ? "#ffd200" : "#8f6ae7";
+        ctx.fillRect(snake[i].x, snake[i].y, box, box);
+        // Add a small border to segments for visibility
+        ctx.strokeStyle = "#222";
+        ctx.strokeRect(snake[i].x, snake[i].y, box, box);
+      }
 
       let headX = snake[0].x;
       let headY = snake[0].y;
@@ -98,28 +139,31 @@
       if (direction === "UP") headY -= box;
       if (direction === "DOWN") headY += box;
 
+      // Fix for Bug #3: Collision Check
+      // We check against 300 (the width) and < 0
+      if (headX < 0 || headX >= 300 || headY < 0 || headY >= 300 || collision(headX, headY, snake)) {
+        clearInterval(game);
+        alert("Oops, game over! Score: " + score);
+        location.reload();
+        return;
+      }
+
       if (headX === food.x && headY === food.y) {
         score++;
-        food = {
-          x: Math.floor(Math.random() * 19) * box,
-          y: Math.floor(Math.random() * 19) * box
-        };
+        document.getElementById("current-score").innerText = score;
+        spawnFood();
       } else {
         snake.pop();
       }
 
-      let newHead = { x: headX, y: headY };
+      snake.unshift({ x: headX, y: headY });
+    }
 
-      if (
-        headX < 0 || headX >= 300 || headY < 0 || headY >= 300 ||
-        snake.some(segment => segment.x === newHead.x && segment.y === newHead.y)
-      ) {
-        clearInterval(game);
-        alert("Oops, game over! Score: " + score);
-        location.reload();
+    function collision(x, y, array) {
+      for (let i = 0; i < array.length; i++) {
+        if (x === array[i].x && y === array[i].y) return true;
       }
-
-      snake.unshift(newHead);
+      return false;
     }
   </script>
 </body>
