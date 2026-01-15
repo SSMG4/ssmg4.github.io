@@ -28,9 +28,10 @@
       image-rendering: pixelated;
       max-width: 90vw;
     }
-    /* Force buttons to release orange state */
-    .repo-link:active {
-        background-color: var(--accent-color, orange) !important;
+    /* Prevents persistent orange highlight on mobile devices */
+    .repo-link {
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
     }
   </style>
 </head>
@@ -67,13 +68,15 @@
     let ctx = canvas.getContext("2d");
     const box = 15;
     let snake, food, direction, game, score, gameActive;
+    let inputQueue = []; // Fixed: Queues fast inputs so none are missed
 
     function startSnake() {
       document.getElementById("game-container").style.display = "block";
       score = 0;
       document.getElementById("current-score").innerText = score;
       direction = ""; 
-      gameActive = false; 
+      gameActive = false;
+      inputQueue = [];
       snake = [{ x: 9 * box, y: 9 * box }];
       spawnFood();
       
@@ -99,14 +102,22 @@
 
     function setDirection(dir) {
       if (!gameActive) gameActive = true;
-      if (dir === "LEFT" && direction !== "RIGHT") direction = "LEFT";
-      else if (dir === "UP" && direction !== "DOWN") direction = "UP";
-      else if (dir === "RIGHT" && direction !== "LEFT") direction = "RIGHT";
-      else if (dir === "DOWN" && direction !== "UP") direction = "DOWN";
+      
+      // Get the last intended direction (either current or last in queue)
+      const lastDir = inputQueue.length > 0 ? inputQueue[inputQueue.length - 1] : direction;
+
+      if (dir === "LEFT" && lastDir !== "RIGHT") inputQueue.push("LEFT");
+      else if (dir === "UP" && lastDir !== "DOWN") inputQueue.push("UP");
+      else if (dir === "RIGHT" && lastDir !== "LEFT") inputQueue.push("RIGHT");
+      else if (dir === "DOWN" && lastDir !== "UP") inputQueue.push("DOWN");
     }
 
     function drawGame() {
-      // 1. Move the snake FIRST
+      // Process the next move in the queue
+      if (inputQueue.length > 0) {
+          direction = inputQueue.shift();
+      }
+
       let headX = snake[0].x;
       let headY = snake[0].y;
 
@@ -126,7 +137,6 @@
         snake.unshift({ x: headX, y: headY });
       }
 
-      // 2. Render EVERYTHING so the user sees the position
       ctx.fillStyle = "#222";
       ctx.fillRect(0, 0, 300, 300);
       ctx.fillStyle = "#ff4d6d";
@@ -137,11 +147,10 @@
         ctx.fillRect(snake[i].x, snake[i].y, box, box);
       }
 
-      // 3. Check for Win/Death AFTER rendering so the visuals match the alert
       if (gameActive) {
         if (snake.length >= 400) {
-          setTimeout(() => { alert("CONGRATULATIONS! 🥳🎉"); location.reload(); }, 10);
           clearInterval(game);
+          setTimeout(() => { alert("CONGRATULATIONS! 🥳🎉"); location.reload(); }, 10);
           return;
         }
 
@@ -159,6 +168,13 @@
       }
       return false;
     }
+
+    // Surgical fix for sticky mobile button states
+    document.addEventListener('touchend', () => {
+        if (document.activeElement && document.activeElement.tagName === 'BUTTON') {
+            document.activeElement.blur();
+        }
+    }, { passive: true });
   </script>
 </body>
 </html>
