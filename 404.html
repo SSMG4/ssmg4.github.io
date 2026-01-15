@@ -15,21 +15,22 @@
       margin-top: 1.5rem;
       gap: 10px;
     }
-
     @media (pointer: coarse) {
       .mobile-controls { display: flex; }
     }
-
     .control-row {
       display: flex;
       justify-content: center;
       gap: 15px;
       width: 100%;
     }
-
     #snake {
       image-rendering: pixelated;
       max-width: 90vw;
+    }
+    /* Force buttons to release orange state */
+    .repo-link:active {
+        background-color: var(--accent-color, orange) !important;
     }
   </style>
 </head>
@@ -48,12 +49,12 @@
       
       <div class="mobile-controls">
         <div class="control-row">
-          <button class="repo-link" style="padding: 15px 25px;" onclick="setDirection('UP'); this.blur();">⬆️</button>
+          <button class="repo-link" style="padding: 15px 25px;" onpointerdown="setDirection('UP')" onpointerup="this.blur()">⬆️</button>
         </div>
         <div class="control-row">
-          <button class="repo-link" style="padding: 15px 25px;" onclick="setDirection('LEFT'); this.blur();">⬅️</button>
-          <button class="repo-link" style="padding: 15px 25px;" onclick="setDirection('DOWN'); this.blur();">⬇️</button>
-          <button class="repo-link" style="padding: 15px 25px;" onclick="setDirection('RIGHT'); this.blur();">➡️</button>
+          <button class="repo-link" style="padding: 15px 25px;" onpointerdown="setDirection('LEFT')" onpointerup="this.blur()">⬅️</button>
+          <button class="repo-link" style="padding: 15px 25px;" onpointerdown="setDirection('DOWN')" onpointerup="this.blur()">⬇️</button>
+          <button class="repo-link" style="padding: 15px 25px;" onpointerdown="setDirection('RIGHT')" onpointerup="this.blur()">➡️</button>
         </div>
       </div>
     </div>
@@ -65,21 +66,19 @@
     let canvas = document.getElementById("snake");
     let ctx = canvas.getContext("2d");
     const box = 15;
-    let snake, food, direction, nextDirection, game, score, gameActive;
+    let snake, food, direction, game, score, gameActive;
 
     function startSnake() {
       document.getElementById("game-container").style.display = "block";
       score = 0;
       document.getElementById("current-score").innerText = score;
-      direction = ""; // Wait for input
-      nextDirection = "";
+      direction = ""; 
       gameActive = false; 
       snake = [{ x: 9 * box, y: 9 * box }];
       spawnFood();
       
       document.addEventListener("keydown", dirControl);
       clearInterval(game);
-      // Reverted to original speed: 190ms
       game = setInterval(drawGame, 190); 
     }
 
@@ -99,68 +98,63 @@
     }
 
     function setDirection(dir) {
-      if (!gameActive) gameActive = true; // Start moving on first click
-      if (dir === "LEFT" && direction !== "RIGHT") nextDirection = "LEFT";
-      else if (dir === "UP" && direction !== "DOWN") nextDirection = "UP";
-      else if (dir === "RIGHT" && direction !== "LEFT") nextDirection = "RIGHT";
-      else if (dir === "DOWN" && direction !== "UP") nextDirection = "DOWN";
+      if (!gameActive) gameActive = true;
+      if (dir === "LEFT" && direction !== "RIGHT") direction = "LEFT";
+      else if (dir === "UP" && direction !== "DOWN") direction = "UP";
+      else if (dir === "RIGHT" && direction !== "LEFT") direction = "RIGHT";
+      else if (dir === "DOWN" && direction !== "UP") direction = "DOWN";
     }
 
     function drawGame() {
-      // Draw background
+      // 1. Move the snake FIRST
+      let headX = snake[0].x;
+      let headY = snake[0].y;
+
+      if (gameActive) {
+        if (direction === "LEFT") headX -= box;
+        if (direction === "RIGHT") headX += box;
+        if (direction === "UP") headY -= box;
+        if (direction === "DOWN") headY += box;
+
+        if (headX === food.x && headY === food.y) {
+          score++;
+          document.getElementById("current-score").innerText = score;
+          spawnFood();
+        } else {
+          snake.pop();
+        }
+        snake.unshift({ x: headX, y: headY });
+      }
+
+      // 2. Render EVERYTHING so the user sees the position
       ctx.fillStyle = "#222";
       ctx.fillRect(0, 0, 300, 300);
-
-      // Draw Food
       ctx.fillStyle = "#ff4d6d";
       ctx.fillRect(food.x, food.y, box, box);
 
-      // Draw Snake (Original Colors/Texture)
       for (let i = 0; i < snake.length; i++) {
         ctx.fillStyle = (i === 0) ? "#ffd200" : "#8f6ae7";
         ctx.fillRect(snake[i].x, snake[i].y, box, box);
       }
 
-      if (!gameActive) return; // Don't process movement if waiting for start
-
-      direction = nextDirection;
-      let headX = snake[0].x;
-      let headY = snake[0].y;
-
-      if (direction === "LEFT") headX -= box;
-      if (direction === "RIGHT") headX += box;
-      if (direction === "UP") headY -= box;
-      if (direction === "DOWN") headY += box;
-
-      // Win Condition (400 tiles = full board)
-      if (snake.length >= 400) {
+      // 3. Check for Win/Death AFTER rendering so the visuals match the alert
+      if (gameActive) {
+        if (snake.length >= 400) {
+          setTimeout(() => { alert("CONGRATULATIONS! 🥳🎉"); location.reload(); }, 10);
           clearInterval(game);
-          alert("CONGRATULATIONS! 🥳🎉\nYou filled the whole board!");
-          location.reload();
           return;
-      }
+        }
 
-      // Death Logic (Strictly outside 0-285 range)
-      if (headX < 0 || headX >= 300 || headY < 0 || headY >= 300 || collision(headX, headY, snake)) {
-        clearInterval(game);
-        alert("Oops, game over! Score: " + score);
-        location.reload();
-        return;
+        if (headX < 0 || headX >= 300 || headY < 0 || headY >= 300 || collision(headX, headY, snake)) {
+          clearInterval(game);
+          setTimeout(() => { alert("Oops, game over! Score: " + score); location.reload(); }, 10);
+          return;
+        }
       }
-
-      if (headX === food.x && headY === food.y) {
-        score++;
-        document.getElementById("current-score").innerText = score;
-        spawnFood();
-      } else {
-        snake.pop();
-      }
-
-      snake.unshift({ x: headX, y: headY });
     }
 
     function collision(x, y, array) {
-      for (let i = 0; i < array.length; i++) {
+      for (let i = 1; i < array.length; i++) {
         if (x === array[i].x && y === array[i].y) return true;
       }
       return false;
