@@ -128,7 +128,7 @@ h1 {
     flex-direction: column;
     transition: border 0.2s, box-shadow 0.2s;
     position: relative;
-    min-height: 200px; /* increased height to avoid overflow */
+    min-height: 200px;
     word-break: break-word;
 }
 .repo-card:hover {
@@ -159,24 +159,54 @@ h1 {
     color: #ffd200;
     margin-bottom: 0.6rem;
 }
+
+/* === SHARED BUTTON LOGIC (UNIFIED SIZING) === */
+.repo-link, .colorful-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none;
+    font-family: 'Mojangles', 'Segoe UI', Arial, sans-serif;
+    transition: background 0.18s, color 0.18s, transform 0.12s;
+    box-sizing: border-box;
+    white-space: nowrap;
+    min-width: 150px; /* Forces buttons to be the same minimum width */
+}
+
 .repo-link {
-    display: inline-block;
     margin-top: 0.5rem;
-    padding: 0.55em 1em;
+    padding: 0.6rem 1.2rem;
     background: var(--button-gradient);
     color: #23233a;
-    font-family: 'Mojangles', 'Segoe UI', Arial, sans-serif;
     border: none;
     border-radius: 9px;
-    font-size: 0.98rem;
-    text-decoration: none;
-    transition: background 0.18s, color 0.18s, transform 0.12s;
+    font-size: 0.9rem;
     box-shadow: 0 2px 10px rgba(90,209,205,0.07);
 }
+
 .repo-link:hover {
     background: var(--button-hover);
     color: #23233a;
     transform: translateY(-2px);
+}
+
+.colorful-btn {
+    padding: 0.8em 2em;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 17px;
+    background: linear-gradient(90deg, #ff4d6d, #ffd200 90%);
+    color: var(--card-bg);
+    box-shadow: 0 2px 14px rgba(255,77,109,0.13);
+    cursor: pointer;
+    margin-top: 0.6em;
+}
+
+.colorful-btn:hover {
+    background: linear-gradient(90deg, #8f6ae7, #5ad1cd 80%);
+    color: #fff;
+    transform: scale(1.05);
 }
 
 /* Org card minor tweaks */
@@ -194,30 +224,10 @@ h1 {
     margin-bottom: 0.6rem;
 }
 
-/* === Donate Button === */
+/* === Donate Button Center === */
 .donate-link {
     text-align: center;
     margin: 2.5rem 0 1rem 0;
-}
-.colorful-btn {
-    display: inline-block;
-    padding: 0.85em 2.2em;
-    font-family: 'Mojangles', 'Segoe UI', Arial, sans-serif;
-    font-size: 1.3rem;
-    border: none;
-    border-radius: 17px;
-    background: linear-gradient(90deg, #ff4d6d, #ffd200 90%);
-    color: var(--card-bg);
-    box-shadow: 0 2px 14px rgba(255,77,109,0.13);
-    cursor: pointer;
-    transition: background 0.3s, transform 0.16s;
-    text-decoration: none;
-    margin-top: 0.6em;
-}
-.colorful-btn:hover {
-    background: linear-gradient(90deg, #8f6ae7, #5ad1cd 80%);
-    color: #fff;
-    transform: scale(1.07);
 }
 
 /* === Footer === */
@@ -233,7 +243,7 @@ footer {
     .main-container { padding: 0.9rem; }
     .repo-list { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
     .header-title h1 { font-size: 2.2rem; }
-    .colorful-btn { font-size: 1.05rem; }
+    .repo-link, .colorful-btn { min-width: 130px; font-size: 0.9rem; }
 }
 
 @media (max-width: 600px) {
