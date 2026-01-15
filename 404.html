@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="https://ssmg4.github.io/assets/css/styles.css">
   <link rel="preload" as="font" href="https://ssmg4.github.io/assets/fonts/mojangles.ttf" type="font/ttf" crossorigin>
   <style>
-    /* Fix for Bug #1: Hide controls on PC, show on Mobile */
     .mobile-controls {
       display: none;
       flex-direction: column;
@@ -17,14 +16,10 @@
       gap: 10px;
     }
 
-    /* Only show if the device supports touch */
     @media (pointer: coarse) {
-      .mobile-controls {
-        display: flex;
-      }
+      .mobile-controls { display: flex; }
     }
 
-    /* Fix for Bug #2: Proper Centering */
     .control-row {
       display: flex;
       justify-content: center;
@@ -33,8 +28,8 @@
     }
 
     #snake {
-      image-rendering: pixelated; /* Keeps it sharp */
-      max-width: 90vw; /* Responsive for small screens */
+      image-rendering: pixelated;
+      max-width: 90vw;
     }
   </style>
 </head>
@@ -53,12 +48,12 @@
       
       <div class="mobile-controls">
         <div class="control-row">
-          <button class="repo-link" style="padding: 15px 25px;" onclick="setDirection('UP')">⬆️</button>
+          <button class="repo-link" style="padding: 15px 25px;" onclick="setDirection('UP'); this.blur();">⬆️</button>
         </div>
         <div class="control-row">
-          <button class="repo-link" style="padding: 15px 25px;" onclick="setDirection('LEFT')">⬅️</button>
-          <button class="repo-link" style="padding: 15px 25px;" onclick="setDirection('DOWN')">⬇️</button>
-          <button class="repo-link" style="padding: 15px 25px;" onclick="setDirection('RIGHT')">➡️</button>
+          <button class="repo-link" style="padding: 15px 25px;" onclick="setDirection('LEFT'); this.blur();">⬅️</button>
+          <button class="repo-link" style="padding: 15px 25px;" onclick="setDirection('DOWN'); this.blur();">⬇️</button>
+          <button class="repo-link" style="padding: 15px 25px;" onclick="setDirection('RIGHT'); this.blur();">➡️</button>
         </div>
       </div>
     </div>
@@ -69,23 +64,23 @@
   <script>
     let canvas = document.getElementById("snake");
     let ctx = canvas.getContext("2d");
-    const box = 15; // 300 / 15 = 20 tiles
-    let snake, food, direction, nextDirection, game, score;
+    const box = 15;
+    let snake, food, direction, nextDirection, game, score, gameActive;
 
     function startSnake() {
       document.getElementById("game-container").style.display = "block";
-      // Reset variables
       score = 0;
       document.getElementById("current-score").innerText = score;
-      direction = "RIGHT";
-      nextDirection = "RIGHT"; // Buffer to prevent self-collision
-      snake = [{ x: 5 * box, y: 10 * box }];
+      direction = ""; // Wait for input
+      nextDirection = "";
+      gameActive = false; 
+      snake = [{ x: 9 * box, y: 9 * box }];
       spawnFood();
       
       document.addEventListener("keydown", dirControl);
       clearInterval(game);
-      // Fix for Bug #4: Reduced interval from 190ms to 130ms for snappier response
-      game = setInterval(drawGame, 130); 
+      // Reverted to original speed: 190ms
+      game = setInterval(drawGame, 190); 
     }
 
     function spawnFood() {
@@ -93,7 +88,6 @@
         x: Math.floor(Math.random() * 20) * box,
         y: Math.floor(Math.random() * 20) * box
       };
-      // Prevent food from spawning on snake body
       if (snake.some(s => s.x === food.x && s.y === food.y)) spawnFood();
     }
 
@@ -105,7 +99,7 @@
     }
 
     function setDirection(dir) {
-      // Logic to prevent 180-degree turns
+      if (!gameActive) gameActive = true; // Start moving on first click
       if (dir === "LEFT" && direction !== "RIGHT") nextDirection = "LEFT";
       else if (dir === "UP" && direction !== "DOWN") nextDirection = "UP";
       else if (dir === "RIGHT" && direction !== "LEFT") nextDirection = "RIGHT";
@@ -113,8 +107,7 @@
     }
 
     function drawGame() {
-      direction = nextDirection; // Apply direction change at the start of the frame
-      
+      // Draw background
       ctx.fillStyle = "#222";
       ctx.fillRect(0, 0, 300, 300);
 
@@ -122,15 +115,15 @@
       ctx.fillStyle = "#ff4d6d";
       ctx.fillRect(food.x, food.y, box, box);
 
-      // Draw Snake
+      // Draw Snake (Original Colors/Texture)
       for (let i = 0; i < snake.length; i++) {
         ctx.fillStyle = (i === 0) ? "#ffd200" : "#8f6ae7";
         ctx.fillRect(snake[i].x, snake[i].y, box, box);
-        // Add a small border to segments for visibility
-        ctx.strokeStyle = "#222";
-        ctx.strokeRect(snake[i].x, snake[i].y, box, box);
       }
 
+      if (!gameActive) return; // Don't process movement if waiting for start
+
+      direction = nextDirection;
       let headX = snake[0].x;
       let headY = snake[0].y;
 
@@ -139,8 +132,15 @@
       if (direction === "UP") headY -= box;
       if (direction === "DOWN") headY += box;
 
-      // Fix for Bug #3: Collision Check
-      // We check against 300 (the width) and < 0
+      // Win Condition (400 tiles = full board)
+      if (snake.length >= 400) {
+          clearInterval(game);
+          alert("CONGRATULATIONS! 🥳🎉\nYou filled the whole board!");
+          location.reload();
+          return;
+      }
+
+      // Death Logic (Strictly outside 0-285 range)
       if (headX < 0 || headX >= 300 || headY < 0 || headY >= 300 || collision(headX, headY, snake)) {
         clearInterval(game);
         alert("Oops, game over! Score: " + score);
