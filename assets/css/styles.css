@@ -114,7 +114,8 @@ h1 {
 }
 .repo-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    /* Change: Exactly 2 columns for PC */
+    grid-template-columns: repeat(2, 1fr);
     gap: 1.7rem;
     margin-top: 1.5rem;
 }
@@ -160,7 +161,7 @@ h1 {
     margin-bottom: 0.6rem;
 }
 
-/* === SHARED BUTTON LOGIC (UNIFIED SIZING) === */
+/* === SHARED BUTTON LOGIC === */
 .repo-link, .colorful-btn {
     display: inline-flex;
     align-items: center;
@@ -171,7 +172,6 @@ h1 {
     transition: background 0.18s, color 0.18s, transform 0.12s;
     box-sizing: border-box;
     white-space: nowrap;
-    min-width: 150px; /* Forces buttons to be the same minimum width */
 }
 
 .repo-link {
@@ -183,6 +183,7 @@ h1 {
     border-radius: 9px;
     font-size: 0.9rem;
     box-shadow: 0 2px 10px rgba(90,209,205,0.07);
+    /* Change: Removed min-width to prevent card overflow */
 }
 
 .repo-link:hover {
@@ -207,6 +208,12 @@ h1 {
     background: linear-gradient(90deg, #8f6ae7, #5ad1cd 80%);
     color: #fff;
     transform: scale(1.05);
+}
+
+/* Specific fix for Snake Controls only */
+.mobile-controls .repo-link {
+    min-width: 60px;
+    height: 50px;
 }
 
 /* Org card minor tweaks */
@@ -241,9 +248,10 @@ footer {
 /* === Responsive === */
 @media (max-width: 900px) {
     .main-container { padding: 0.9rem; }
-    .repo-list { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+    /* Change: 1 column on mobile/tablet to give cards full width */
+    .repo-list { grid-template-columns: 1fr; }
     .header-title h1 { font-size: 2.2rem; }
-    .repo-link, .colorful-btn { min-width: 130px; font-size: 0.9rem; }
+    .colorful-btn { font-size: 1.05rem; }
 }
 
 @media (max-width: 600px) {
