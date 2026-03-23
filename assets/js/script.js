@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const musicIcon = document.getElementById('music-icon');
 
     if (musicToggle && audio) {
-        audio.volume = 0.5;
+        audio.volume = 0.2;
         musicToggle.addEventListener('click', () => {
             if (audio.paused) {
                 audio.play();
