@@ -1,4 +1,3 @@
-// === Theme Switching ===
 const root = document.body;
 const themeToggle = document.getElementById('theme-toggle');
 const themeIcon = document.getElementById('theme-icon');
@@ -37,17 +36,30 @@ if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
     setTheme(pref);
 })();
 
-// === Mojangles font for headers/buttons ===
 document.addEventListener("DOMContentLoaded", function() {
     document.querySelectorAll('h1, h2, .repo-title, .colorful-btn, .repo-link').forEach(el => {
         el.style.fontFamily = "'Mojangles', 'Segoe UI', Arial, sans-serif";
     });
+
+    const audio = document.getElementById('bg-audio');
+    const musicToggle = document.getElementById('music-toggle');
+    const musicIcon = document.getElementById('music-icon');
+
+    if (musicToggle && audio) {
+        audio.volume = 0.5;
+        musicToggle.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play();
+                musicIcon.classList.replace('fa-play', 'fa-pause');
+            } else {
+                audio.pause();
+                musicIcon.classList.replace('fa-pause', 'fa-play');
+            }
+        });
+    }
 });
 
-/* --- MANUAL SITES --- */
 const MANUAL_SITES = [
-    // Add external websites here. Example:
-    // { name: 'My Portfolio', url: 'https://example.com', description: 'My personal portfolio' }
 ];
 
 function loadManualSites() {
@@ -59,7 +71,6 @@ function loadManualSites() {
     }
 }
 
-/* === Rendering helpers === */
 function makeCard(kind, title, descText, metaHtml, actions = []) {
     const card = document.createElement('div');
     card.className = 'repo-card';
@@ -117,9 +128,9 @@ function makeCard(kind, title, descText, metaHtml, actions = []) {
 
 const GITHUB_USER = 'SSMG4';
 
-/* === 1. GitHub Projects (Now includes "Visit Website" if available) === */
 async function fetchReposAndRender() {
     const container = document.getElementById('repo-list');
+    const countEl = document.getElementById('repo-count');
     if (!container) return;
     container.innerHTML = '<div class="repo-card">Loading repositories...</div>';
     try {
@@ -133,30 +144,29 @@ async function fetchReposAndRender() {
         repos.forEach(repo => {
             const metaLine = `<span title="Stars"><i class="fa-solid fa-star"></i> ${repo.stargazers_count}</span>
                               <span title="Language">${repo.language || 'N/A'}</span>`;
-            
             const actions = [{ href: repo.html_url, label: 'View on GitHub' }];
-
-            // Auto-check for website
             if (repo.has_pages || repo.homepage) {
                 const siteUrl = repo.homepage || `https://${GITHUB_USER}.github.io/${repo.name}/`;
                 actions.push({ href: siteUrl, label: 'Visit Website' });
             }
-
             container.appendChild(makeCard('repo', repo.name, repo.description, { line: metaLine }, actions));
         });
+
+        if (countEl) countEl.textContent = `(${repos.length})`;
     } catch (e) {
         container.innerHTML = '<div class="repo-card">Could not load repositories.</div>';
     }
 }
 
-/* === 2. Manual Websites Section === */
 async function fetchWebsitesAndRender() {
     const container = document.getElementById('websites-list');
+    const countEl = document.getElementById('websites-count');
     if (!container) return;
-    
+
     const manual = loadManualSites();
     if (manual.length === 0) {
         container.innerHTML = '<div class="repo-card">No external websites listed.</div>';
+        if (countEl) countEl.textContent = '(0)';
         return;
     }
 
@@ -165,21 +175,33 @@ async function fetchWebsitesAndRender() {
         const actions = item.url ? [{ href: item.url, label: 'Visit Website' }] : [];
         container.appendChild(makeCard('site', item.name, item.description, null, actions));
     });
+    if (countEl) countEl.textContent = `(${manual.length})`;
 }
 
-/* === 3. Organizations === */
 async function fetchOrgsAndRender() {
     const container = document.getElementById('orgs-list');
+    const countEl = document.getElementById('orgs-count');
     if (!container) return;
     try {
         const res = await fetch(`https://api.github.com/users/${GITHUB_USER}/orgs`);
         const data = await res.json();
         container.innerHTML = '';
-        data.forEach(org => {
+
+        const orgDetails = await Promise.all(
+            data.map(org => fetch(`https://api.github.com/orgs/${org.login}`).then(r => r.json()).catch(() => org))
+        );
+
+        orgDetails.forEach(org => {
             const meta = { avatar: org.avatar_url, line: '' };
             const actions = [{ href: `https://github.com/${org.login}`, label: 'View on GitHub' }];
+            if (org.blog && org.blog.trim() !== '') {
+                const websiteUrl = org.blog.startsWith('http') ? org.blog : `https://${org.blog}`;
+                actions.push({ href: websiteUrl, label: 'View Website' });
+            }
             container.appendChild(makeCard('org', org.login, org.description, meta, actions));
         });
+
+        if (countEl) countEl.textContent = `(${orgDetails.length})`;
     } catch (e) {
         container.innerHTML = '<div class="repo-card">No organizations found.</div>';
     }

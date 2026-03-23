@@ -9,11 +9,14 @@
     <link rel="preload" as="font" href="assets/fonts/mojangles.ttf" type="font/ttf" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
-    <audio controls autoplay loop>
-    <source src="music.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
-  </audio>
 <body>
+    <div id="music-player">
+        <audio id="bg-audio" loop src="music.mp3"></audio>
+        <button id="music-toggle" aria-label="Toggle music">
+            <i class="fa-solid fa-play" id="music-icon"></i>
+        </button>
+        <span class="music-label">♪ Soundtrack</span>
+    </div>
     <div class="main-container">
         <header>
             <div class="header-title">
@@ -26,40 +29,24 @@
             <p class="subtitle">A hub for all my cool projects and socials!</p>
             <div class="socials">
                 <a href="https://github.com/SSMG4" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                <!-- Add more socials here as needed -->
                 <a href="https://x.com/ssmg4x" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
                 <a href="https://discord.com/users/1025857552791117888" target="_blank" aria-label="Discord"><i class="fab fa-discord"></i></a>
-                <!-- Example: <a href="https://your.site" target="_blank" aria-label="Website"><i class="fas fa-globe"></i></a> -->
             </div>
         </header>
         <main>
-            <!-- Reordered: Projects first -->
             <section class="repo-section">
-                <h2>My GitHub Projects</h2>
-                <div id="repo-list" class="repo-list">
-                    <!-- Repo cards injected here by script.js -->
-                </div>
+                <h2>My GitHub Projects <span id="repo-count" class="section-count"></span></h2>
+                <div id="repo-list" class="repo-list"></div>
             </section>
 
-            <!-- Websites Section (no on-site manual form anymore) -->
             <section class="repo-section">
-                <h2>My Websites</h2>
-                <!-- Note: Manual website entries are now added directly in the JavaScript (assets/js/script.js)
-                     Edit the MANUAL_SITES array in that file to add / change manual entries.
-                     Example entry format:
-                     { name: 'My Site', url: 'https://example.com', description: 'Short description' }
-                -->
-                <div id="websites-list" class="repo-list">
-                    <!-- Site cards injected here -->
-                </div>
+                <h2>My Websites <span id="websites-count" class="section-count"></span></h2>
+                <div id="websites-list" class="repo-list"></div>
             </section>
 
-            <!-- Orgs last -->
             <section class="repo-section">
-                <h2>Organizations</h2>
-                <div id="orgs-list" class="repo-list">
-                    <!-- Org cards injected here -->
-                </div>
+                <h2>Organizations <span id="orgs-count" class="section-count"></span></h2>
+                <div id="orgs-list" class="repo-list"></div>
             </section>
 
             <section class="donate-link">
@@ -67,7 +54,7 @@
             </section>
         </main>
         <footer>
-            <p>&copy; 2025 SSMG4. Built with <span class="heart">❤</span> | <a href="404.html">Broken link?</a></p>
+            <p>&copy; 2026 SSMG4. Built with <span class="heart">❤</span> | <a href="404.html">Broken link?</a></p>
         </footer>
     </div>
     <script src="assets/js/script.js"></script>
